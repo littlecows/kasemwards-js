@@ -6,6 +6,7 @@ import Dashboard from './dashboard.jsx';
 import Dispensing from './dispensing.jsx';
 import Instock from './instock.jsx';
 import Receive from './receive.jsx';
+import NewMedic from './newmedic.jsx';
 
 function Tabbar() {
 
@@ -13,7 +14,8 @@ function Tabbar() {
         'Dashboard': <Dashboard/>,
         'Dispensing': <Dispensing/>,
         'Instock': <Instock/>,
-        'Receive': <Receive/>
+        'Receive': <Receive/>,
+        'Newmedic': <NewMedic/>
     }
 
     const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -36,6 +38,7 @@ function Tabbar() {
                 <a href="#Dispensing" onClick={() => selectMenu('Dispensing')}>Dispensing</a>
                 <a href="#Instock" onClick={() => selectMenu('Instock')}>รายการยาคงเหลือ</a>
                 <a href="#Receive" onClick={() => selectMenu('Receive')}>รับยาเข้าคลัง</a>
+                <a href="#Newmedic" onClick={() => selectMenu('Newmedic')}>เพิ่มรายการยาใหม่</a>
                 <a href="#logout">Logout</a>
             </div>
 
