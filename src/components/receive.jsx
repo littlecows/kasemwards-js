@@ -5,11 +5,9 @@ function Receive() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
     const [medic, setMedic] = useState(null)
     const [quantity, setQuantity] = useState(null)
-
-    const [predata, setPredata] = useState([])
+    const [medicPrefix, setmedicPrefix] = useState([])
     const [message, setMessage] = useState('');
 
     useEffect(() => {
@@ -30,28 +28,38 @@ function Receive() {
         fetchData()
     }, [])
 
-    const reset = () => {
-        setMedic('')
-        setQuantity(null)
-    }
-
-    const preData = (medic, quantity) => {
+    const Prefix = (medic, quantity, medicPrefix, setmedicPrefix) => {
         let medicData
-        if (medic === null || medic === 'เลือกรายการที่นี่') {
+        if (!medic || medic === 'เลือกรายการที่นี่') {
             alert('กรุณาเลือกรายการที่ต้องการเพิ่ม')
             return false
         } else {
             medicData = medic.split(',')
         }
 
-        if (quantity === null) {
+        if (!quantity) {
             alert('กรุณาป้อนจำนวนรายการก่อน')
             return false
         }
         
-        setPredata([
-            ...predata, [medicData[0], medicData[1], quantity]
-        ])
+        if (medicPrefix.length > 0) {
+            let exists = medicPrefix.some(item => item.id === medicData[0]);
+
+            if (exists) {
+                alert('มีข้อมูลนี้แล้ว');
+                return false;
+            } else {
+                setmedicPrefix([
+                    ...medicPrefix, 
+                    {id: medicData[0], name: medicData[1], qty: quantity}
+                ]);
+            }
+
+        } else {
+            setmedicPrefix([
+                {id: medicData[0], name: medicData[1], qty: quantity}
+            ])
+        }
 
     }
 
@@ -59,7 +67,7 @@ function Receive() {
         event.preventDefault();
 
         const formData = {
-            "data": predata
+            "data": medicPrefix
         }
 
         try {
@@ -77,6 +85,7 @@ function Receive() {
 
             const result = await response.json();
             setMessage('Data added successfully!');
+            setmedicPrefix([])
 
         } catch (error) {
             setMessage(`Error: ${error.message}`);
@@ -88,9 +97,37 @@ function Receive() {
     if (error) return <div>Error: {error.message}</div>;
 
     return (
-        <div className='container-fluid'>
+        <>
+            <br/>
             <h2>รับยาเข้าคลัง</h2>
-            <button className='btn btn-primary' type='button' data-bs-toggle="modal" data-bs-target="#staticBackdrop">เพิ่มข้อมูล</button>
+            <div className='input-group mb-3'>
+                <span className="input-group-text" id="basic-addon2">รายการ: </span>
+                <select 
+                    className='form-select' 
+                    onChange={(e) => setMedic(e.target.value)}>
+                        <option>เลือกรายการที่นี่</option>
+                        {data['medic'].map((item) => {
+                            return <option key={item.code} value={item.id+','+item.name+'/'+item.unit}>{item.name}/ประเภท({item.unit})</option>
+                        })}
+                </select>
+            </div>
+            <div className='input-group mb-3'>
+                <span className="input-group-text" id="basic-addon2">จำนวน: </span>
+                <input 
+                    onChange={e => setQuantity(e.target.value)} 
+                    type="text" 
+                    className="form-control" 
+                    placeholder="..กรอกหน่วยนับที่นี่.." 
+                    aria-label="medicunit" 
+                    aria-describedby="basic-addon1" 
+                />
+            </div>
+            <button 
+                className='btn btn-primary' 
+                type='button'
+                onClick={() => Prefix(medic, quantity, medicPrefix, setmedicPrefix)}>
+                    เพิ่มข้อมูล
+            </button>
             
             <table className='table'>
                 <thead>
@@ -101,12 +138,20 @@ function Receive() {
                     </tr>
                 </thead>
                 <tbody>
-                    {predata.map((item) => {
+                    {medicPrefix.map((item, index) => {
                        return ( 
-                        <tr key={item[0]+''+item[1]+''+item[2]}>
-                            <td>{item[1]}</td>
-                            <td>{item[2]}</td>
-                            <td><button className='btn btn-danger'>ลบ</button></td>
+                        <tr key={index+''+item.id}>
+                            <td>{item.name}</td>
+                            <td>{item.qty}</td>
+                            <td>
+                                <button 
+                                className='btn btn-danger'
+                                onClick={() => {
+                                    setmedicPrefix(medicPrefix.filter((_, i) => i !== index));
+                                }}>
+                                    ลบ
+                                </button>
+                            </td>
                         </tr>
                        )
                     })}
@@ -115,34 +160,7 @@ function Receive() {
             <button className='btn btn-success' onClick={handleSubmit}>ยืนยัน</button>
             {message && <p>{message}</p>}
 
-            <div className="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div className="modal-dialog">
-                <div className="modal-content">
-                <div className="modal-header">
-                    <h1 className="modal-title fs-5" id="staticBackdropLabel">รายการยา</h1>
-                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div className="modal-body">
-                    <p>รายการ</p>
-                    <select className='form-select' onChange={(e) => setMedic(e.target.value)}>
-                        <option>เลือกรายการที่นี่</option>
-                        {data['medic'].map((item) => {
-                            return <option key={item.code} value={item.id+','+item.name+'/'+item.unit}>{item.name}/ประเภท({item.unit})</option>
-                        })}
-                    </select>
-                    <br />
-                    <p>จำนวน</p>
-                    <input type="text" className='form-control' onChange={(e) => setQuantity(e.target.value)} />
-                </div>
-                <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={() => reset}>ปิด</button>
-                    <button type="button" className="btn btn-success" onClick={() => preData(medic, quantity)}>เพิ่มข้อมูล</button>
-                </div>
-                </div>
-            </div>
-            </div>
-
-        </div>
+        </>
     )
 }
 

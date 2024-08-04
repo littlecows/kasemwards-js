@@ -73,5 +73,5 @@ async def medic_detail():
 @app.post("/product_receive")
 async def product_receive(data: Product_receipt):
     print(data)
-    predata = (tuple(datas) for datas in data.data)
+    value = ((item['id'], item['qty']) for item in data.data)
     return {'status': 'pass'}

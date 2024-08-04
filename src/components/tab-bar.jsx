@@ -35,7 +35,7 @@ function Tabbar() {
             <div className={`sidebar ${sidebarOpen ? 'open' : ''}`} id="sidebar">
                 <h2>Management System</h2>
                 <a href="#Dashboard" onClick={() => selectMenu('Dashboard')}>Dashboard</a>
-                <a href="#Dispensing" onClick={() => selectMenu('Dispensing')}>Dispensing</a>
+                <a href="#Dispensing" onClick={() => selectMenu('Dispensing')}>จ่ายยา</a>
                 <a href="#Instock" onClick={() => selectMenu('Instock')}>รายการยาคงเหลือ</a>
                 <a href="#Receive" onClick={() => selectMenu('Receive')}>รับยาเข้าคลัง</a>
                 <a href="#Newmedic" onClick={() => selectMenu('Newmedic')}>เพิ่มรายการยาใหม่</a>
