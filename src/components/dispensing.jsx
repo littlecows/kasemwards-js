@@ -2,11 +2,38 @@ import React, { useState, useEffect } from 'react';
 
 function Dispensing() {
 
+    // form data
     const [types, setTypes] = useState(12)
     const [name, setName] = useState('')
     const [identify, setIndentify] = useState('')
     const [quantity, setQuantity] = useState('')
-    const [data, setData] = useState([])
+    const [prefix, setPrefix] = useState([])
+
+    // prefix data
+    const [data, setData] = useState(null)
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+
+    // get dispensing
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/getdispensing')
+                if (!response.ok) {
+                    throw new Error('Network response was not ok')
+                }
+                const result = await response.json()
+                setData(result)
+                setLoading(false)
+            } catch (error) {
+                setError(error)
+                setLoading(false)
+            }
+        }
+
+        fetchData()
+    }, [])
 
     const handleType = (maxLength) => {
         setTypes(maxLength)
@@ -21,7 +48,7 @@ function Dispensing() {
         setQuantity(qty)
     }
 
-    const Prefic = (data, setData) => {
+    const Prefic = () => {
         if(types === '' || 
             name === '' ||
             identify === '' ||
@@ -31,6 +58,8 @@ function Dispensing() {
         }
     }
 
+    if (loading) return <h1>Loading...</h1>;
+    if (error) return <h1>Error: {error.message}</h1>;
 
     return (
         <>  
@@ -112,7 +141,7 @@ function Dispensing() {
                 />
             </div>
 
-            <button className='btn btn-primary' onClick={() => Prefic(data, setData)}>เพิ่มข้อมูล</button>
+            <button className='btn btn-primary'>เพิ่มข้อมูล</button>
 
             <table className='table'>
                 <thead>

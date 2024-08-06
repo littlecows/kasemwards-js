@@ -53,7 +53,6 @@ async def instock():
     connect.close()
 
     title = ['รหัสยา', 'ชื่อยา', 'จำนวนคงเหลือ', 'หน่วย']
-
     return {"title": title, "instock": result}
 
 
@@ -69,9 +68,33 @@ async def medic_detail():
 
     return {"medic": result}
 
+@app.get("/getdispensing")
+async def getdispensing():
+    connect = db_connect()
+    connect.commit()
+    with connect.cursor(pymysql.cursors.DictCursor) as cur:
+        sql = '''
+            SELECT product.id, products.code, products.name, products.unit,
+                inventory.quantity
+            FROM inventory
+            JOIN products ON inventory.prod_id = products.id
+            WHERE inventory.store_id = 1
+            ORDER BY products.code
+        '''
+        cur.execute(sql)
+        result = cur.fetchall()
+    connect.close()
 
+    return {"dispensing": result}
+
+
+# ============================
+# POST
+# ============================
 @app.post("/product_receive")
 async def product_receive(data: Product_receipt):
     print(data)
     value = ((item['id'], item['qty']) for item in data.data)
     return {'status': 'pass'}
+
+    
