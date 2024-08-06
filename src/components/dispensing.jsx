@@ -1,47 +1,77 @@
 import React, { useState, useEffect } from 'react';
 
 function Dispensing() {
+
+    const [types, setTypes] = useState(12)
+    const [identify, setIndentify] = useState('')
+
+    const handleType = (maxLength) => {
+        setTypes(maxLength)
+        setIndentify('')
+    }
+
+    const handleIdentify = (value) => {
+        setIndentify(value.replace(/[^0-9]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0'))
+    }
+
     return (
         <>  
             <br />
-            <div class="form-check">
+            <div className="form-check">
                 <input 
-                    class="form-check-input" 
+                    className="form-check-input" 
                     type="radio" 
-                    name="flexRadioDefault" 
+                    name="flexRadioDefault"
+                    value={4}
+                    onChange={e => handleType(e.target.value)}
                     id="flexRadioDefault1"
                 />
-                <label class="form-check-label" for="flexRadioDefault1">
-                    Default radio
+                <label className="form-check-label" htmlFor="flexRadioDefault1">
+                    พนักงาน
                 </label>
             </div>
 
-            <div class="form-check">
+            <div className="form-check">
                 <input 
-                    class="form-check-input" 
+                    className="form-check-input" 
                     type="radio" 
                     name="flexRadioDefault" 
                     id="flexRadioDefault2" 
-                    checked
+                    value={12}
+                    onChange={e => handleType(e.target.value)}
                 />
-                <label class="form-check-label" for="flexRadioDefault2">
-                    Default checked radio
+                <label className="form-check-label" htmlFor="flexRadioDefault2">
+                    นักศึกษา
                 </label>
             </div>
 
-            <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon1">รหัส</span>
+            <div className="input-group mb-3">
+                <span className="input-group-text" id="basic-addon1">รหัส</span>
                 <input 
                     type="text" 
-                    class="form-control" 
+                    className="form-control"
+                    maxLength={types}
+                    value={identify}
                     placeholder="....กรอกรหัสที่นี่...." 
+                    aria-label="identify" 
+                    aria-describedby="basic-addon1"
+                    onChange={e => handleIdentify(e.target.value)}
+                />
+            </div>
+
+            <div className="input-group mb-3">
+                <span className="input-group-text" id="basic-addon1">ผู้รับยา</span>
+                <input 
+                    type="text" 
+                    className="form-control"
+                    placeholder="....กรอกข้อมูลที่นี่...." 
                     aria-label="identify" 
                     aria-describedby="basic-addon1"
                 />
             </div>
 
-            <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon2">รายการ</span>
+            <div className="input-group mb-3">
+                <span className="input-group-text" id="basic-addon2">รายการ</span>
                 <select 
                     name="" 
                     id=""
@@ -51,11 +81,11 @@ function Dispensing() {
                 </select>
             </div>
 
-            <div class="input-group mb-3">
-                <span class="input-group-text" id="basic-addon3">จำนวน</span>
+            <div className="input-group mb-3">
+                <span className="input-group-text" id="basic-addon3">จำนวน</span>
                 <input 
                     type="text" 
-                    class="form-control" 
+                    className="form-control" 
                     placeholder="....กรอกจำนวนที่นี่...." 
                     aria-label="identify" 
                     aria-describedby="basic-addon3"
@@ -63,6 +93,19 @@ function Dispensing() {
             </div>
 
             <button className='btn btn-primary'>เพิ่มข้อมูล</button>
+
+            <table className='table'>
+                <thead>
+                    <tr>
+                        <th>รายการ</th>
+                        <th>จำนวน</th>
+                        <th>จัดการ</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
         </>
     )
 }
