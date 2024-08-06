@@ -7,7 +7,9 @@ function NewMedic() {
     const [medicPrefix, setMedicPrefix] = useState([]);
 
     const Prefix = (code, name, unit, medicPrefix, setMedicPrefix) => {
-        if (code === '' || name === '' || unit === '') {
+        if(code === '' || 
+            name === '' || 
+            unit === '') {
             alert('Cannot have empty data');
             return false;
         }

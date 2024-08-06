@@ -3,7 +3,10 @@ import React, { useState, useEffect } from 'react';
 function Dispensing() {
 
     const [types, setTypes] = useState(12)
+    const [name, setName] = useState('')
     const [identify, setIndentify] = useState('')
+    const [quantity, setQuantity] = useState('')
+    const [data, setData] = useState([])
 
     const handleType = (maxLength) => {
         setTypes(maxLength)
@@ -13,6 +16,21 @@ function Dispensing() {
     const handleIdentify = (value) => {
         setIndentify(value.replace(/[^0-9]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0'))
     }
+
+    const handleQuantity = (qty) => {
+        setQuantity(qty)
+    }
+
+    const Prefic = (data, setData) => {
+        if(types === '' || 
+            name === '' ||
+            identify === '' ||
+            quantity === '') {
+            alert('Cannot have empty data')
+            return false
+        }
+    }
+
 
     return (
         <>  
@@ -67,6 +85,7 @@ function Dispensing() {
                     placeholder="....กรอกข้อมูลที่นี่...." 
                     aria-label="identify" 
                     aria-describedby="basic-addon1"
+                    onChange={e => setName(e.target.value)}
                 />
             </div>
 
@@ -89,10 +108,11 @@ function Dispensing() {
                     placeholder="....กรอกจำนวนที่นี่...." 
                     aria-label="identify" 
                     aria-describedby="basic-addon3"
+                    onChange={e => handleQuantity(e.target.value)}
                 />
             </div>
 
-            <button className='btn btn-primary'>เพิ่มข้อมูล</button>
+            <button className='btn btn-primary' onClick={() => Prefic(data, setData)}>เพิ่มข้อมูล</button>
 
             <table className='table'>
                 <thead>
