@@ -126,6 +126,9 @@ function Dispensing() {
                     className='form-control'
                 >
                     <option>เลือกรายการที่นี่</option>
+                    {data['dispensing'].map((item) => {
+                        return <option>{item.name}</option>
+                    })}
                 </select>
             </div>
 
